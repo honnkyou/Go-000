@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
+	"os"
 )
 
 func main() {
@@ -12,5 +16,15 @@ func main() {
 	}
 
 	defer client.Close()
+	reqReader := bufio.NewReader(os.Stdin)
+	for {
+		req, err := reqReader.ReadString('\n')
+		if err != nil {
+			log.Fatalf("read message from stdin error: %v\n", err)
+		}
+		client.Write([]byte(req))
+		resp, err := ioutil.ReadAll(client)
 
+		fmt.Printf("Recieve date from server: %v\n", resp)
+	}
 }
